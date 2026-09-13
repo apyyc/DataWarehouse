@@ -8,8 +8,11 @@ LABEL org.opencontainers.image.description="Object storage warehouse (FastAPI :8
 LABEL org.opencontainers.image.version="0.5.3"
 
 # 安装 Supervisor + curl（健康检查用）+ tzdata（容器内统一中国时区）
+# 先把 Alpine apk 源换成清华镜像：官方源 dl-cdn.alpinelinux.org 的 DNS 返回 IPv6，
+# 本机 IPv6 不通时 apk 会死等首连接（假死不超时）；清华源 IPv4 可达且更快
 ENV TZ=Asia/Shanghai
-RUN apk add --no-cache supervisor curl tzdata
+RUN sed -i 's#https://dl-cdn.alpinelinux.org#https://mirrors.tuna.tsinghua.edu.cn#g' /etc/apk/repositories \
+    && apk add --no-cache supervisor curl tzdata
 
 # Python 依赖（不锁版本，pip 自动适配 Alpine musl 可用 wheel）
 # 使用清华 PyPI 镜像避免官方源连接超时；可改回官方源或换其他镜像

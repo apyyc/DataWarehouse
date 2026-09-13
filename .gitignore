@@ -7,3 +7,5 @@ warehouse/
 tokens.json
 signed_links.json
 .env
+*.tar
+audit.log
